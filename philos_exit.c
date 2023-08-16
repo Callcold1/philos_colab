@@ -6,7 +6,7 @@
 /*   By: kmooney <kmooney@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 12:31:42 by kmooney           #+#    #+#             */
-/*   Updated: 2023/08/16 15:50:25 by kmooney          ###   ########.fr       */
+/*   Updated: 2023/08/16 21:02:51 by kmooney          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_free_all(t_data *data)
 {
-	//pthread_mutex_unlock(data->dead_mutex);
+	pthread_mutex_unlock(data->dead_mutex);
 	ft_destroy_forks(data);
 	if (data->philo)
 		ft_free_philo(data);

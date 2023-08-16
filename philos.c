@@ -6,11 +6,13 @@
 /*   By: kmooney <kmooney@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 14:24:18 by kmooney           #+#    #+#             */
-/*   Updated: 2023/08/16 15:26:20 by kmooney          ###   ########.fr       */
+/*   Updated: 2023/08/16 21:19:50 by kmooney          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philos.h"
+
+pthread_mutex_t mutex;
 
 void	ft_kill_all(t_data *data)
 {
@@ -38,6 +40,8 @@ void	ft_monitor(t_data *data)
 			else
 			{
 				ft_kill_all(data);
+				data->philo[i]->current = get_time() - data->philo[i]->start;
+				printf("%lu %d died\n", data->philo[i]->current, data->philo[i]->id);
 				return ;
 			}
 		}
@@ -50,6 +54,7 @@ void	ft_thread_init(t_data *data)
 	int	i;
 
 	i = 0;
+	pthread_mutex_init(&mutex, NULL);
 	while (i < data->num_philo && data->death != 1)
 	{
 		data->philo[i]->thread = (pthread_t *)malloc(sizeof(pthread_t));
@@ -61,6 +66,7 @@ void	ft_thread_init(t_data *data)
 	}
 	ft_monitor(data);
 	ft_join_philos(data);
+	pthread_mutex_destroy(&mutex);
 	ft_free_all(data);
 	return ;
 }
@@ -79,6 +85,7 @@ void	ft_philo_init(t_data *data, int i)
 		data->philo[i]->dead = 0;
 		data->philo[i]->meals = 0;
 		data->philo[i]->current = 0;
+		data->philo[i]->dead_mutex = &data->dead_mutex;
 		data->philo[i]->thread = (pthread_t *)malloc(sizeof(pthread_t));
 		if (!data->philo[i]->thread)
 			ft_free_all(data);
@@ -132,6 +139,7 @@ void	ft_create_forks(t_data *data)
 		i++;
 	}
 	data->forks[i] = NULL;
+	ft_create_dead_mutex(data);
 	return ;
 }
 

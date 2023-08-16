@@ -6,7 +6,7 @@
 /*   By: kmooney <kmooney@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 12:43:54 by kmooney           #+#    #+#             */
-/*   Updated: 2023/08/16 16:15:52 by kmooney          ###   ########.fr       */
+/*   Updated: 2023/08/16 22:25:33 by kmooney          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_philo
 	int				dead;
 	pthread_mutex_t *fork_left;
 	pthread_mutex_t *fork_right;
-	pthread_mutex_t	*dead_mutex;
+	pthread_mutex_t	**dead_mutex;
 	pthread_t		*thread;
 } t_philo;
 
@@ -60,6 +60,7 @@ typedef struct s_data
 	t_forks			**forks;
 } t_data;
 
+void		will_he_wakeup(t_philo *philo, int status);
 int			main(int argc, char **argv);
 int			ft_atoi(char *str);
 uint64_t	ft_atoi_uint64t(char *str);
@@ -82,5 +83,9 @@ void		ft_think(t_philo *philo);
 int			ft_eat(t_philo *philo);
 void			ft_die_verify(t_philo *philo);
 void		ft_sleep(t_philo *philo);
+int			print_out(t_philo *philo, char *msg);
+void		double_fork_method(t_philo *philo);
+
+
 
 #endif //PHILOS_H
