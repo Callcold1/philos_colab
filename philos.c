@@ -6,57 +6,21 @@
 /*   By: kmooney <kmooney@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 14:24:18 by kmooney           #+#    #+#             */
-/*   Updated: 2023/08/16 21:19:50 by kmooney          ###   ########.fr       */
+/*   Updated: 2023/08/17 18:48:53 by kmooney          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philos.h"
-
-pthread_mutex_t mutex;
-
-void	ft_kill_all(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	while (i < data->num_philo)
-	{
-		data->philo[i]->dead = 1;
-		i++;
-	}
-	return ;
-}
-
-void	ft_monitor(t_data *data)
-{
-	int i;
-	while (1)
-	{
-		i = 0;
-		while (i < data->num_philo)
-		{
-			if (data->philo[i]->dead != 1)
-				i++;
-			else
-			{
-				ft_kill_all(data);
-				data->philo[i]->current = get_time() - data->philo[i]->start;
-				printf("%lu %d died\n", data->philo[i]->current, data->philo[i]->id);
-				return ;
-			}
-		}
-	}
-	return ;
-}
 
 void	ft_thread_init(t_data *data)
 {
 	int	i;
 
 	i = 0;
-	pthread_mutex_init(&mutex, NULL);
 	while (i < data->num_philo && data->death != 1)
 	{
+		if (data->num_philo == 1)
+			data->philo[i]->alone = 1;
 		data->philo[i]->thread = (pthread_t *)malloc(sizeof(pthread_t));
 		{
 			if (pthread_create(data->philo[i]->thread, NULL, &ft_routine, (void *)data->philo[i]) != 0)
@@ -66,7 +30,6 @@ void	ft_thread_init(t_data *data)
 	}
 	ft_monitor(data);
 	ft_join_philos(data);
-	pthread_mutex_destroy(&mutex);
 	ft_free_all(data);
 	return ;
 }
@@ -77,11 +40,12 @@ void	ft_philo_init(t_data *data, int i)
 		if (!data->philo[i])
 			ft_free_all(data);
 		data->philo[i]->start = data->start;
-		data->philo[i]->reset = data->start - get_time();
-		data->philo[i]->id = i;
 		data->philo[i]->t_die = data->time_to_die;
 		data->philo[i]->t_eat = data->time_to_eat;
 		data->philo[i]->t_sleep = data->time_to_sleep;
+		data->philo[i]->death_after_eating = 0;
+		//data->philo[i]->reset = data->start - get_time();
+		data->philo[i]->id = i;
 		data->philo[i]->dead = 0;
 		data->philo[i]->meals = 0;
 		data->philo[i]->current = 0;
@@ -133,7 +97,8 @@ void	ft_create_forks(t_data *data)
 	while (i < data->num_philo)
 	{
 		data->forks[i] = (t_forks *)malloc(sizeof(t_forks));
-		data->forks[i]->id = i;
+		//data->forks[i]->id = i;
+		//add fork status
 		if (pthread_mutex_init(&(data->forks[i])->mutex, NULL) != 0)
 			write(2, "Mutex creation fail", 20);
 		i++;
@@ -157,7 +122,7 @@ void	ft_input_convert(char **argv, int argc, t_data *data)
 	return ;
 }
 
-uint64_t	get_time(void) // returns time in milliseconds
+uint64_t	get_time(void)
 {
 	struct timeval	tv;
 

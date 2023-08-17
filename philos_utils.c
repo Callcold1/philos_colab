@@ -1,16 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philos_utils1.c                                    :+:      :+:    :+:   */
+/*   philos_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kmooney <kmooney@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/29 23:37:56 by lbaron            #+#    #+#             */
-/*   Updated: 2023/08/15 19:25:16 by kmooney          ###   ########.fr       */
+/*   Updated: 2023/08/17 12:46:47 by kmooney          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philos.h"
+
+int	print_out(t_philo *philo, char *msg)
+{
+	if (philo->dead != 1)
+	{	
+		pthread_mutex_lock(*philo->dead_mutex);
+		philo->current = get_time() - philo->start;
+		printf("%lu %d %s\n", philo->current, philo->id, msg);
+		pthread_mutex_unlock(*philo->dead_mutex);
+		return (0);
+	}
+	else
+		return (1);
+}
+
+// int	print_out_expected_death(t_philo *philo, char *msg)
+// {
+	// if (philo->dead != 1)
+	// {	
+		// pthread_mutex_lock(*philo->dead_mutex);
+		// philo->current = get_time() - philo->start;
+		// printf("%lu %d %s %lu\n", philo->current, philo->id, msg, philo->time_to_die);
+		// pthread_mutex_unlock(*philo->dead_mutex);
+		// return (0);
+	// }
+	// else
+		// return (1);
+// }
 
 void print_message(void)
 {

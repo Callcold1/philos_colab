@@ -1,5 +1,5 @@
 
-SRC = philos.c philos_utils.c philos_exit.c philos_func.c
+SRC = philos.c philos_utils.c philos_exit.c philos_func.c philos_monitor.c
 INCLUDES = philos.h
 
 all:
