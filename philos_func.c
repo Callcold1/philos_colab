@@ -6,7 +6,7 @@
 /*   By: kmooney <kmooney@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 23:22:38 by kmooney           #+#    #+#             */
-/*   Updated: 2023/08/17 19:10:55 by kmooney          ###   ########.fr       */
+/*   Updated: 2023/08/17 19:47:24 by kmooney          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void *ft_routine(void *philo_void)
 		else
 		{
 			print_out(philo, "is sleeping");
-			will_he_wakeup(philo, 0);
+			//will_he_wakeup(philo, 0);
 			if (philo->dead != 1)
 			{
 				usleep (philo->t_sleep * 1000);
@@ -42,10 +42,10 @@ void *ft_routine(void *philo_void)
 
 void	odd_eat(t_philo *philo)
 {
-	if (pthread_mutex_lock(philo->fork_right) == 0)
+	if (pthread_mutex_lock(&philo->fork_right->mutex) == 0)
 	{	   	
        	print_out(philo, "has taken a fork");
-		pthread_mutex_lock(philo->fork_left);
+		pthread_mutex_lock(&philo->fork_left->mutex);
 		print_out(philo, "has taken a fork");
 		print_out(philo, "is eating");
 		philo->current = get_time() - philo->start;
@@ -61,17 +61,17 @@ void	odd_eat(t_philo *philo)
 		//philo->reset = philo->current;
 		usleep(philo->t_eat * 1000);
 		philo->hungry = 0;
-		pthread_mutex_unlock(philo->fork_right);
-		pthread_mutex_unlock(philo->fork_left);
+		pthread_mutex_unlock(&philo->fork_right->mutex);
+		pthread_mutex_unlock(&philo->fork_left->mutex);
 	}
 }
 
 void	even_eat(t_philo *philo)
 {
-	if (pthread_mutex_lock(philo->fork_left) == 0)
+	if (pthread_mutex_lock(&philo->fork_left->mutex) == 0)
 	{     		
        	print_out(philo, "has taken a fork");
-		pthread_mutex_lock(philo->fork_right);
+		pthread_mutex_lock(&philo->fork_right->mutex);
 		print_out(philo, "has taken a fork");
 		print_out(philo, "is eating");
 		philo->current = get_time() - philo->start;
@@ -87,8 +87,8 @@ void	even_eat(t_philo *philo)
 		//philo->reset = philo->current;
 		usleep(philo->t_eat * 1000);
 		philo->hungry = 0;
-		pthread_mutex_unlock(philo->fork_left);
-		pthread_mutex_unlock(philo->fork_right);
+		pthread_mutex_unlock(&philo->fork_left->mutex);
+		pthread_mutex_unlock(&philo->fork_right->mutex);
 	}
 }
 

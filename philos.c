@@ -6,7 +6,7 @@
 /*   By: kmooney <kmooney@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/16 14:24:18 by kmooney           #+#    #+#             */
-/*   Updated: 2023/08/17 18:48:53 by kmooney          ###   ########.fr       */
+/*   Updated: 2023/08/17 19:44:16 by kmooney          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ void	ft_philo_init(t_data *data, int i)
 		if (!data->philo[i]->thread)
 			ft_free_all(data);
 		if (i == 0)
-			data->philo[i]->fork_left = &data->forks[data->num_philo - 1]->mutex;
+			data->philo[i]->fork_left = data->forks[data->num_philo - 1];
 		else 
-			data->philo[i]->fork_left = &data->forks[i - 1]->mutex;
-		data->philo[i]->fork_right = &data->forks[i]->mutex;
+			data->philo[i]->fork_left = data->forks[i - 1];
+		data->philo[i]->fork_right = data->forks[i];
 		return ;
 }
 

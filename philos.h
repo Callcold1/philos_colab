@@ -6,7 +6,7 @@
 /*   By: kmooney <kmooney@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 12:43:54 by kmooney           #+#    #+#             */
-/*   Updated: 2023/08/17 18:17:55 by kmooney          ###   ########.fr       */
+/*   Updated: 2023/08/17 19:43:32 by kmooney          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@
 # include <sys/time.h>
 # include <stdint.h>
 
+typedef struct s_forks
+{
+	int				status;
+	pthread_mutex_t	mutex;
+} t_forks;
+
 typedef struct s_philo
 {
 	int				id;
@@ -33,8 +39,10 @@ typedef struct s_philo
 	uint64_t		death_after_eating;
 	uint64_t		elapsed;
 	uint64_t		reset;
-	pthread_mutex_t *fork_left;
-	pthread_mutex_t *fork_right;
+	// pthread_mutex_t *fork_left;
+	// pthread_mutex_t *fork_right;
+	t_forks *fork_left;
+	t_forks *fork_right;
 	pthread_mutex_t	**dead_mutex;
 	pthread_mutex_t	**print_mutex;
 	pthread_t		*thread;
@@ -42,12 +50,6 @@ typedef struct s_philo
 	int				hungry;
 	int				dead;
 } t_philo;
-
-typedef struct s_forks
-{
-	int				status;
-	pthread_mutex_t	mutex;
-} t_forks;
 
 typedef struct s_data
 {
@@ -83,6 +85,8 @@ void		ft_monitor(t_data *data);
 void		will_he_wakeup(t_philo *philo, int status);
 void		ft_die_verify(t_philo *philo);
 void		ft_kill_all(t_data *data);
+
+void	check_time_to_die_after_sleep(t_philo *philo);
 
 uint64_t	get_time(void);
 int			print_out(t_philo *philo, char *msg);
